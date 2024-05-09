@@ -28,8 +28,6 @@ def deploy(name: str):
     print(f"Project path: {project_path}")
     os.chdir(project_path)
     switch_to_branch(branch)
-    #run_maven_command("mvn clean deploy -Dmaven.test.skip=true")
-    #os.system("mvn clean deploy -Dmaven.test.skip=true")
     if run_maven_command("mvn clean deploy -Dmaven.test.skip=true"):
         print(f"Success: {name}")
         successlist += f"{name}\n"
@@ -43,7 +41,8 @@ def deployAll(path: Annotated[str, typer.Argument()], env: Annotated[str, typer.
     global base, branch
     base = path
     branch = env
-    deployList = "irt-common-redis-starter,irt-common-core,irt-log-api,irt-cfg-api,irt-subject-api,irt-supply-api,irt-rand-api,irt-report-api".split(",")
+    # irt-common-redis-starter,irt-common-core,irt-log-api,irt-cfg-api,irt-subject-api,irt-supply-api,irt-rand-api,irt-report-api
+    deployList = "irt-common-core,irt-cfg-api,irt-supply-api".split(",")
     with Progress(
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),
