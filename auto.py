@@ -3,8 +3,19 @@ import os
 import subprocess
 from typing_extensions import Annotated
 from rich.progress import Progress, BarColumn, TextColumn, TaskProgressColumn
+from enum import Enum
 
 app = typer.Typer()
+
+class DeployEnum(Enum):
+    IRT_1 = "irt-common-redis-starter"
+    IRT_2 = "irt-common-core"
+    IRT_3 = "irt-log-api"
+    IRT_4 = "irt-cfg-api"
+    IRT_5 = "irt-subject-api"
+    IRT_6 = "irt-supply-api"
+    IRT_7 = "irt-rand-api"
+    IRT_8 = "irt-report-api"
 
 base = r"D:\Projects"
 branch = "develop"
@@ -41,8 +52,9 @@ def deployAll(path: Annotated[str, typer.Argument()], env: Annotated[str, typer.
     global base, branch
     base = path
     branch = env
-    # irt-common-redis-starter,irt-common-core,irt-log-api,irt-cfg-api,irt-subject-api,irt-supply-api,irt-rand-api,irt-report-api
-    deployList = "irt-common-core,irt-cfg-api,irt-supply-api".split(",")
+    # 1 irt-common-redis-starter, 2 irt-common-core, 3 irt-log-api, 4 irt-cfg-api,
+    # 5 irt-subject-api, 6 irt-supply-api, 7 irt-rand-api, 8 irt-report-api
+    deployList = [DeployEnum.IRT_2, DeployEnum.IRT_4, DeployEnum.IRT_6]
     with Progress(
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),
@@ -51,7 +63,7 @@ def deployAll(path: Annotated[str, typer.Argument()], env: Annotated[str, typer.
         task = progress.add_task("[cyan]Deploying progress", total=len(deployList))
         for item in deployList:
             progress.update(task, advance=1)
-            deploy(item)
+            deploy(item.value)
     
     print(f"Processed {len(deployList)} packages.")
     if len(successlist) > 0:
