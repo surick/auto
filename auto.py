@@ -4,6 +4,7 @@ import subprocess
 from typing_extensions import Annotated
 from rich.progress import Progress, BarColumn, TextColumn, TaskProgressColumn
 from enum import Enum
+from datetime import datetime
 
 app = typer.Typer()
 
@@ -27,8 +28,6 @@ def deploy(name: str):
     global successlist, failedlist
     print()
     print(f"Deploying {name}...")
-    print(f"Base path: {base}")
-    print(f"Current branch: {branch}")
 
     project_path = find_project_path(base, name)
     if project_path is None:
@@ -43,7 +42,7 @@ def deploy(name: str):
         print(f"Success: {name}")
         successlist += f"{name}\n"
     else:
-        print(f"Faile Compile: {name}")
+        print(f"Compile failed: {name}")
         failedlist += f"{name}\n" 
 
 
@@ -52,20 +51,29 @@ def deployAll(path: Annotated[str, typer.Argument()], env: Annotated[str, typer.
     global base, branch
     base = path
     branch = env
+    print(f"Base path: {base}")
+    print(f"Current branch: {branch}")
+    start_time = datetime.now()
+
     # 1 irt-common-redis-starter, 2 irt-common-core, 3 irt-log-api, 4 irt-cfg-api,
     # 5 irt-subject-api, 6 irt-supply-api, 7 irt-rand-api, 8 irt-report-api
+    #deployList = [DeployEnum.IRT_2, DeployEnum.IRT_3, DeployEnum.IRT_4, DeployEnum.IRT_5, DeployEnum.IRT_6, DeployEnum.IRT_7, DeployEnum.IRT_8]
     deployList = [DeployEnum.IRT_2, DeployEnum.IRT_4, DeployEnum.IRT_6]
     with Progress(
-        TextColumn("[progress.description]{task.description}"),
+        TextColumn("[progress.description] {task.description}"),
         BarColumn(),
         TaskProgressColumn()
     ) as progress:
-        task = progress.add_task("[cyan]Deploying progress", total=len(deployList))
+        task = progress.add_task("[cyan]Deploying progress", total = len(deployList))
         for item in deployList:
-            progress.update(task, advance=1)
+            progress.update(task, advance = 1)
             deploy(item.value)
     
-    print(f"Processed {len(deployList)} packages.")
+    end_time = datetime.now()
+    print(f"Start time: {start_time}")
+    print(f"End time: {end_time}")
+    print(f"Processed {len(deployList)} packages")
+    print(f"Cost {(end_time - start_time).seconds} seconds")
     if len(successlist) > 0:
         print(f"Success List: \n{successlist}")
     if len(failedlist) > 0:
