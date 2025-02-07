@@ -57,8 +57,8 @@ def deployAll(path: Annotated[str, typer.Argument()], env: Annotated[str, typer.
 
     # 1 irt-common-redis-starter, 2 irt-common-core, 3 irt-log-api, 4 irt-cfg-api,
     # 5 irt-subject-api, 6 irt-supply-api, 7 irt-rand-api, 8 irt-report-api
-    #deployList = [DeployEnum.IRT_2, DeployEnum.IRT_3, DeployEnum.IRT_4, DeployEnum.IRT_5, DeployEnum.IRT_6, DeployEnum.IRT_7, DeployEnum.IRT_8]
-    deployList = [DeployEnum.IRT_2, DeployEnum.IRT_4, DeployEnum.IRT_6]
+    deployList = [DeployEnum.IRT_2, DeployEnum.IRT_3, DeployEnum.IRT_4, DeployEnum.IRT_5, DeployEnum.IRT_6, DeployEnum.IRT_7, DeployEnum.IRT_8]
+    #deployList = [DeployEnum.IRT_2, DeployEnum.IRT_4, DeployEnum.IRT_6]
     with Progress(
         TextColumn("[progress.description] {task.description}"),
         BarColumn(),
